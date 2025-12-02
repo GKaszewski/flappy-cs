@@ -113,50 +113,41 @@ public class GameEngine
 
     private void GeneratePipes()
     {
+        _pipes.Clear();
         var random = new Random();
+        float currentX = GameConstants.OG_WIDTH;
+
         for (var i = 0; i < 5; i++)
         {
-            var offset = random.Next(150, 317);
+            var spacing = 100 + random.Next(50, 150);
+            currentX += spacing;
+
             var downY = random.Next(180, 201);
             var upY = random.Next(-100, 1);
-            var x = GameConstants.OG_WIDTH + (i * 100) + offset;
-            _pipes.Add(new Pipe(new Vector2(x, upY), PipeType.Up));
-            _pipes.Add(new Pipe(new Vector2(x, downY), PipeType.Down));
+
+            _pipes.Add(new Pipe(new Vector2(currentX, upY), PipeType.Up));
+            _pipes.Add(new Pipe(new Vector2(currentX, downY), PipeType.Down));
         }
     }
 
     private void SetPipesPosition()
     {
-        var offPipes = _pipes.Where(pipe => pipe.Position.X < 0).ToList();
+        var offPipes = _pipes.Where(pipe => pipe.Position.X < -Pipe.Width).ToList();
         if (offPipes.Count == 0) return;
 
+        float maxX = _pipes.Max(p => p.Position.X);
         var random = new Random();
+
         for (var i = 0; i < offPipes.Count; i += 2)
         {
-            var offset = random.Next(150, 317);
+            var spacing = 100 + random.Next(50, 150);
+            maxX += spacing;
+
             var downY = random.Next(180, 201);
             var upY = random.Next(-100, 1);
 
-            // We need to find the rightmost pipe to append after?
-            // Original logic: var x = Global.OG_WIDTH + (i * 100) + offset; 
-            // Wait, original logic was weird. It reset X based on loop index?
-            // "var x = Global.OG_WIDTH + (i * 100) + offset;" inside the loop over offPipes.
-            // This seems to reset them relative to screen, not relative to last pipe.
-            // But since they go off screen in pairs, maybe it works out.
-            // Let's stick to original logic but be careful.
-            // Actually, original code:
-            // var offPipes = Global.pipes.Where(pipe => pipe.position.X < 0).ToList();
-            // for (var i = 0; i < offPipes.Count; i += 2) { ... }
-            // It seems it just recycles them to the right.
-
-            var x = GameConstants.OG_WIDTH + (i * 100) + offset;
-            // This X is relative to screen width, so it might overlap if we are not careful?
-            // If i=0, x = 144 + 0 + 150 = 294.
-            // If the last pipe is at 200, this puts it at 294.
-            // Seems fine.
-
-            if (i < offPipes.Count) offPipes[i].Position = new Vector2(x, upY);
-            if (i + 1 < offPipes.Count) offPipes[i + 1].Position = new Vector2(x, downY);
+            if (i < offPipes.Count) offPipes[i].Position = new Vector2(maxX, upY);
+            if (i + 1 < offPipes.Count) offPipes[i + 1].Position = new Vector2(maxX, downY);
         }
     }
 
