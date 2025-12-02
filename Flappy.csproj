@@ -7,8 +7,21 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>      <PackageReference Include="Raylib-cs" Version="6.0.0" />
+    
+      <ProjectReference Include="Flappy.Core\Flappy.Core.csproj" />
+    </ItemGroup>
+
     <ItemGroup>
-      <PackageReference Include="Raylib-cs" Version="6.0.0" />
+      <Compile Remove="Flappy.Core\**" />
+      <Compile Remove="Flappy.Tests\**" />
+      <Compile Remove="Tests\**" />
+      <EmbeddedResource Remove="Flappy.Core\**" />
+      <EmbeddedResource Remove="Flappy.Tests\**" />
+      <EmbeddedResource Remove="Tests\**" />
+      <None Remove="Flappy.Core\**" />
+      <None Remove="Flappy.Tests\**" />
+      <None Remove="Tests\**" />
     </ItemGroup>
 
     <ItemGroup>
